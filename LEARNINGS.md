@@ -18,8 +18,8 @@
 5. Created first staging model: `stg_yellow_trips`
 
 ### Key Decisions & Why
-- **DuckDB vs Athena:** Started with DuckDB locally for fast feedback loop. No AWS infrastructure overhead. Plan to migrate to Athena + S3 in Phase 3 when we have real data ingestion.
-- **dbt 1.7.0 vs 1.8.0:** Chose 1.7.0 for compatibility with dbt-duckdb 1.7.1. Version mismatches were our biggest blocker yesterday.
+- **DuckDB vs Athena:** Started with DuckDB locally for fast feedback loop. No AWS infrastructure overhead. Plan to migrate to Athena + S3 in Phase 3 when I have real data ingestion.
+- **dbt 1.7.0 vs 1.8.0:** Chose 1.7.0 for compatibility with dbt-duckdb 1.7.1. Version mismatches were my biggest blocker yesterday.
 - **Staging layer (stg_*):** Cleans raw data (type casting, filtering nulls) without business logic. Makes downstream models simpler.
 
 ### Challenges & Solutions
@@ -39,7 +39,7 @@
    - **Incremental:** Only insert NEW rows. Efficient for large datasets.
    - **Ephemeral:** Temporary, only during dbt run. Like a CTE.
 
-### Alternatives We Considered
+### Alternatives I Considered
 | Tool | Why Not | Why dbt Instead |
 |------|---------|-----------------|
 | **Dataform** (Google Cloud) | Locked into BigQuery ecosystem | dbt is database-agnostic. Switch from DuckDB → Athena → Snowflake with 1 config change |
