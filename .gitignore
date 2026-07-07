@@ -1,0 +1,13 @@
+.venv/
+.dbt/
+target/
+dbt_packages/
+logs/
+*.duckdb
+*.duckdb-shm
+*.duckdb-wal
+.DS_Store
+__pycache__/
+*.pyc
+.vscode/
+.idea/
