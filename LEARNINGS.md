@@ -69,6 +69,13 @@ PHASE 2
   - Materialized as a physical table for fast querying
 - Updated `models/marts/fct_daily_trips.sql` to source from `fact_trips` instead of old `stg_yellow_trips`
   - Added `count(distinct vendor_key)` — now I can see how many vendors operated each day
+ 
+    <img width="341" height="615" alt="Screenshot 2026-07-10 at 11 25 59 AM" src="https://github.com/user-attachments/assets/e4752fdb-a0a0-4f49-a5ca-10023b803044" />
+
+<img width="1440" height="856" alt="Screenshot 2026-07-10 at 11 24 49 AM" src="https://github.com/user-attachments/assets/497151fb-4497-4506-b533-93ebe7ee4141" />
+
+<img width="428" height="531" alt="Screenshot 2026-07-10 at 11 25 18 AM" src="https://github.com/user-attachments/assets/341d55bd-b6b4-4382-bed4-0c390916af62" />
+
 
 ### Why I Built It This Way
 - **Intermediate model**: Acts as the single source of cleaned, enriched trip data. Multiple fact tables can reference it without repeating joins and casts (DRY principle).
