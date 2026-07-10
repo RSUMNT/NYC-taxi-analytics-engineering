@@ -1,3 +1,4 @@
+
 # NYC Taxi Analytics Engineering — Learning Journal
 
 ## Project Overview
@@ -51,4 +52,46 @@
 - Add dbt tests (not_null, unique, relationships)
 - Understand dbt ref() and dependencies
 
----
+------------------------------------------------------------------------------------------------------------------
+
+PHASE 2
+
+## Day 2 — July 10, 2024: Intermediate Model & Star Schema Fact Table
+
+### What I Built
+- `models/intermediate/int_trips_cleaned.sql` — A view that:
+  - Casts all raw CSV columns to proper data types
+  - Filters invalid trips (zero passengers, zero distance, zero fare)
+  - Joins to `dim_vendor`, `dim_rate_code`, `dim_payment_type` to add surrogate keys
+  - Calculates trip duration in minutes using `datediff()`
+- `models/marts/fact_trips.sql` — A table that:
+  - Contains only foreign keys (vendor_key, rate_code_key, payment_type_key) and measures (fare, distance, tip, etc.)
+  - Materialized as a physical table for fast querying
+- Updated `models/marts/fct_daily_trips.sql` to source from `fact_trips` instead of old `stg_yellow_trips`
+  - Added `count(distinct vendor_key)` — now I can see how many vendors operated each day
+
+### Why I Built It This Way
+- **Intermediate model**: Acts as the single source of cleaned, enriched trip data. Multiple fact tables can reference it without repeating joins and casts (DRY principle).
+- **Fact table (star schema)**: Separated descriptive data (dimensions) from numeric measures (facts). This makes queries fast, storage efficient, and enables historical tracking of dimension changes (coming next).
+- **Materialized as table**: Fact tables are queried heavily; physical storage is faster than recomputing a view each time.
+
+### Issues I Faced
+1. **Empty files after `touch`**: Used `nano` to actually write SQL content. Learned that `touch` only creates an empty file.
+2. **Git push rejected**: Remote had changes I didn't have locally. Fixed with `git pull --rebase` before pushing.
+3. **Pandas `ModuleNotFoundError`**: Virtual environment wasn't activated. Fixed with `source .venv/bin/activate` and `pip install pandas pyarrow`.
+4. **Script path issue**: Ran `download_sample.py` from `scripts/` folder; CSV tried to save to `scripts/seeds/` which doesn't exist. Fixed by running from project root.
+
+### Key Concepts Learned
+- **Star Schema**: Facts (measures + foreign keys) surrounded by dimensions (descriptive attributes). Industry standard for analytics warehouses.
+- **Surrogate Keys**: Internal integer keys generated with `row_number()`. Insulate warehouse from source system changes and enable SCD Type 2.
+- **Intermediate models**: A Silver layer between raw staging and Gold marts. Does cleaning, joining, and enrichment once.
+- **`ref()` function**: Tells dbt about model dependencies, enables automatic ordering, and powers lineage graphs.
+
+### dbt Commands Used
+```bash
+dbt seed --select yellow_trips_real  # Load new CSV
+dbt run                               # Run all models
+dbt run -s model_name                 # Run specific model
+dbt show --select model_name          # Preview model output
+dbt docs generate                     # Generate lineage docs
+dbt docs serve                        # View docs in browser
