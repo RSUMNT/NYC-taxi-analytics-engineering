@@ -56,7 +56,7 @@
 
 PHASE 2
 
-## Day 2 — July 10, 2024: Intermediate Model & Star Schema Fact Table
+##Intermediate Model & Star Schema Fact Table
 
 ### What I Built
 - `models/intermediate/int_trips_cleaned.sql` — A view that:
