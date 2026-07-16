@@ -102,3 +102,38 @@ dbt run -s model_name                 # Run specific model
 dbt show --select model_name          # Preview model output
 dbt docs generate                     # Generate lineage docs
 dbt docs serve                        # View docs in browser
+
+
+## Day 3 — July 11, 2024 (Completed July 16): SCD Type 2 with dbt Snapshots
+
+### What I Built
+- `snapshots/vendor_snapshot.sql` — A dbt snapshot that tracks historical changes to vendor names
+- Simulated a vendor name change from "VeriFone Inc" to "VeriFone Holdings"
+- Verified SCD Type 2 works: old name preserved with `dbt_valid_to`, new name added with `dbt_valid_to = NULL`
+
+### Issues I Faced & Solutions
+
+1. **Querying the wrong database file**
+   - Was querying `dbt_project.duckdb` but profiles.yml pointed to `dev.duckdb`
+   - Lesson: Always check `~/.dbt/profiles.yml` to find the actual database path
+
+2. **Schema name required for snapshots**
+   - Snapshot was created in `snapshots` schema (as configured by `target_schema`)
+   - Must query `snapshots.vendor_snapshot` not just `vendor_snapshot`
+   - Lesson: Snapshots don't go to the default `main` schema
+
+3. **Invalid snapshot config key: `time_stamp`**
+   - Originally had `time_stamp ='snapshots'` in config
+   - Valid keys are: `target_schema`, `unique_key`, `strategy`, `updated_at`
+   - Lesson: dbt silently ignores invalid config keys; snapshot still ran but incorrectly
+
+4. **Multiple snapshot runs create duplicate versions**
+   - Each `dbt snapshot` run with `current_timestamp` creates new rows
+   - In production, use a real `updated_at` column from the source system
+   - Lesson: For demos, reset the snapshot table between simulations
+
+### Key Concepts Learned
+- **SCD Type 2**: Tracks dimension changes by adding new rows (not overwriting)
+- **dbt Snapshots**: Automate SCD Type 2 by comparing `updated_at` timestamps
+- **`dbt_valid_from` / `dbt_valid_to`**: System columns dbt adds to track row validity periods
+- **`unique_key`**: Must be the NATURAL key (vendor_id), not the surrogate key (vendor_key)

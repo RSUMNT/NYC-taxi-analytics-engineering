@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: fact_trips
+    description: "Transaction-level fact table with foreign keys to dimensions"
+    columns:
+      - name: vendor_key
+        description: "Foreign key to dim_vendor"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_vendor')
+              field: vendor_key
+      - name: rate_code_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_rate_code')
+              field: rate_code_key
+      - name: payment_type_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_payment_type')
+              field: payment_type_key
+      - name: fare_amount
+        tests:
+          - positive_value
+
+  - name: fct_daily_trips
+    description: "Daily aggregated taxi trip metrics"
+    columns:
+      - name: pickup_date
+        tests:
+          - not_null
+          - unique
