@@ -137,3 +137,41 @@ dbt docs serve                        # View docs in browser
 - **dbt Snapshots**: Automate SCD Type 2 by comparing `updated_at` timestamps
 - **`dbt_valid_from` / `dbt_valid_to`**: System columns dbt adds to track row validity periods
 - **`unique_key`**: Must be the NATURAL key (vendor_id), not the surrogate key (vendor_key)
+
+## Day 4 — July 12, 2024 (Completed July 16): dbt Tests, Schema Docs & Lineage
+
+### What I Built
+- `models/staging/schema.yml` — Tests and descriptions for all dimension tables
+- `models/marts/schema.yml` — Tests for fact tables including foreign key relationships
+- `tests/generic/positive_value.sql` — Custom test to ensure values are > 0
+- Generated dbt documentation with `dbt docs generate` — full lineage graph
+
+### Issues I Faced & Solutions
+
+1. **Git push rejected (again)**
+   - Remote had commits I didn't have locally
+   - Fixed with: `git pull origin main --rebase` then `git push origin main`
+   - Lesson: Always pull before pushing, especially after a break
+
+2. **Understanding relationships test**
+   - `relationships` test checks that foreign key values actually exist in the referenced dimension table
+   - Syntax: `to: ref('dim_vendor')` and `field: vendor_key`
+   - Lesson: This catches orphaned fact rows before they corrupt reports
+
+3. **Custom tests use Jinja templates**
+   - `{% test positive_value(model, column_name) %}` — dbt passes the model and column automatically
+   - The test must return rows that FAIL the condition
+   - Lesson: Custom tests are just SQL queries that return "bad" rows
+
+### Key Concepts Learned
+- **dbt tests**: Built-in (not_null, unique, relationships, accepted_values) + custom generic tests
+- **schema.yml**: Single file that defines tests, descriptions, and column metadata
+- **Relationships test**: Enforces referential integrity between facts and dimensions
+- **dbt docs**: Auto-generates interactive documentation with lineage graphs
+- **Lineage graph**: Shows data flow from seeds → staging → intermediate → marts
+
+### dbt Commands Used
+```bash
+dbt test                    # Run all data quality tests
+dbt docs generate           # Generate documentation
+dbt docs serve              # View docs in browser at localhost:8080
