@@ -95,7 +95,7 @@ PHASE 2
 - **`ref()` function**: Tells dbt about model dependencies, enables automatic ordering, and powers lineage graphs.
 
 ### dbt Commands Used
-```bash
+
 dbt seed --select yellow_trips_real  # Load new CSV
 dbt run                               # Run all models
 dbt run -s model_name                 # Run specific model
@@ -171,7 +171,22 @@ dbt docs serve                        # View docs in browser
 - **Lineage graph**: Shows data flow from seeds → staging → intermediate → marts
 
 ### dbt Commands Used
-```bash
+
 dbt test                    # Run all data quality tests
+
+<img width="969" height="972" alt="Screenshot 2026-07-16 at 1 53 59 AM" src="https://github.com/user-attachments/assets/e72758b5-abe8-4645-83cf-ce142b7015fc" />
+
+
 dbt docs generate           # Generate documentation
+
+<img width="969" height="972" alt="Screenshot 2026-07-16 at 1 56 02 AM" src="https://github.com/user-attachments/assets/dcc723d1-254f-43e6-abef-398caed6df86" />
+
+
 dbt docs serve              # View docs in browser at localhost:8080
+
+Generated Lineage Graphs to relationships between tables. 
+
+https://github.com/user-attachments/assets/1ae97339-0110-4d8b-8e48-f8e66e1b326a
+
+
+
